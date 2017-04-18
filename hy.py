@@ -51,16 +51,12 @@ class lil_Listener(tweepy.StreamListener):
 
     def on_data(self, data):
         # turn the JSON tweet object into a dictionary
-        tweet = json.loads(data)
-        td = self.parse_tweet(tweet)
         try:
-            x = x + 1
-            if x >= 1000000:
-                x = 0
-                y += 1
-            print(x,y)
+            tweet = json.loads(data)
+            td = self.parse_tweet(tweet)
         except:
-            pass
+            return False
+            
         print('\t'.join([str(td[k]) for k in sorted(td)]))
         self.write_tweet(td)
 
@@ -68,14 +64,6 @@ class lil_Listener(tweepy.StreamListener):
             try:
                 orig_tweet = self.api.get_status(td['8_reply_to'])._json
                 tdo = self.parse_tweet(orig_tweet, as_reply = True)
-                try:
-                    x = x + 1
-                    if x >= 1000000:
-                        x = 0
-                        y += 1
-                    print(x,y)
-                except:
-                    pass
                 print('\t'.join([str(tdo[k]) for k in sorted(tdo)]))
                 self.write_tweet(tdo)
             except:
